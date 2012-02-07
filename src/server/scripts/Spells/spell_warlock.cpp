@@ -38,7 +38,50 @@ enum WarlockSpells {
 	WARLOCK_DARK_INTENT_EFFECT = 85767,
 	//WARLOCK_IMPROVED_HEALTHSTONE_R1         = 18692,
 	//WARLOCK_IMPROVED_HEALTHSTONE_R2         = 18693,
-	WARLOCK_FELHUNTER_SHADOWBITE_R1 = 54049
+    WARLOCK_FELHUNTER_SHADOWBITE_R1 = 54049,
+    WARLOCK_DEMONIC_PACT_SPELL = 53646
+};
+
+// 47236 - Demonic Pact
+class spell_warl_demonic_pact: public SpellScriptLoader {
+public:
+    spell_warl_demonic_pact() : SpellScriptLoader("spell_warl_demonic_pact") {}
+
+    class spell_warl_demonic_pact_AuraScript: public AuraScript 
+    {
+        PrepareAuraScript(spell_warl_demonic_pact_AuraScript);
+
+        bool Validate(SpellEntry const * /*spellEntry*/) 
+        {
+            if (!sSpellStore.LookupEntry(WARLOCK_DEMONIC_PACT_SPELL))
+                return false;
+
+            return true;
+        }
+
+        void HandleEffectApply(AuraEffect const * aurEff, AuraEffectHandleModes /*mode*/) 
+        {
+            Unit* target = GetTarget();
+            if (target->ToPlayer())
+                return; 
+
+            if (Unit *caster = aurEff->GetBase()->GetCaster())
+                if (caster->GetAuraEffect(SPELL_AURA_DUMMY, SPELLFAMILY_WARLOCK, 3220, 0))
+                {
+                    if (Pet *pet = caster->ToPlayer()->GetPet())
+                        pet->CastSpell(pet, WARLOCK_DEMONIC_PACT_SPELL, true, NULL, aurEff);
+                }
+        }
+
+        void Register() 
+        {
+            OnEffectApply += AuraEffectApplyFn(spell_warl_demonic_pact_AuraScript::HandleEffectApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript *GetAuraScript() const {
+        return new spell_warl_demonic_pact_AuraScript();
+    }
 };
 
 // 77799 Fel Flame
@@ -455,4 +498,5 @@ void AddSC_warlock_spell_scripts() {
 	new spell_warl_shadow_bite();
 	new spell_warl_drain_life();
     new spell_warl_fel_flame();
+    new spell_warl_demonic_pact();
 }
