@@ -1,0 +1,1 @@
+UPDATE `creature_template` SET `spell2` = 47236 WHERE `entry` IN (416, 417, 1860, 1863, 17252);

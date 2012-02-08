@@ -62,15 +62,11 @@ public:
         void HandleEffectApply(AuraEffect const * aurEff, AuraEffectHandleModes /*mode*/) 
         {
             Unit* target = GetTarget();
-            if (target->ToPlayer())
-                return; 
-
+           
             if (Unit *caster = aurEff->GetBase()->GetCaster())
                 if (caster->GetAuraEffect(SPELL_AURA_DUMMY, SPELLFAMILY_WARLOCK, 3220, 0))
-                {
-                    if (Pet *pet = caster->ToPlayer()->GetPet())
-                        pet->CastSpell(pet, WARLOCK_DEMONIC_PACT_SPELL, true, NULL, aurEff);
-                }
+                    if (target->isPet())
+                        target->CastSpell(target, WARLOCK_DEMONIC_PACT_SPELL, true, NULL, aurEff);
         }
 
         void Register() 
@@ -499,4 +495,5 @@ void AddSC_warlock_spell_scripts() {
 	new spell_warl_drain_life();
     new spell_warl_fel_flame();
     new spell_warl_demonic_pact();
+    new spell_warl_demonic_rebirth();
 }
