@@ -495,5 +495,4 @@ void AddSC_warlock_spell_scripts() {
 	new spell_warl_drain_life();
     new spell_warl_fel_flame();
     new spell_warl_demonic_pact();
-    new spell_warl_demonic_rebirth();
 }
